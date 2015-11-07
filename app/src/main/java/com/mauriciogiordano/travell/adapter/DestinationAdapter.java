@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mauriciogiordano.travell.R;
-import com.mauriciogiordano.travell.model.City;
+import com.mauriciogiordano.travell.model.Destination;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +19,11 @@ import java.util.List;
  * Author: Mauricio Giordano (mauricio.c.giordano@gmail.com)
  * Copyright (c) by Travell, 2015 - All rights reserved.
  */
-public class ItineraryAdapter extends BaseAdapter {
+public class DestinationAdapter extends BaseAdapter {
 
-    private List<City> dataList;
+    private List<Destination> dataList;
 
-    public void setDataList(List<City> _dataList) {
+    public void setDataList(List<Destination> _dataList) {
         dataList = _dataList;
         notifyDataSetChanged();
     }
@@ -33,7 +33,7 @@ public class ItineraryAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public ItineraryAdapter() {
+    public DestinationAdapter() {
         dataList = new ArrayList<>();
     }
 
@@ -41,15 +41,15 @@ public class ItineraryAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null) {
             view = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.adapter_itinerary, viewGroup, false);
+                        .inflate(R.layout.adapter_destination, viewGroup, false);
         }
 
         TextView name = (TextView) view.findViewById(R.id.name);
         ImageView image = (ImageView) view.findViewById(R.id.image);
 
-        City city = dataList.get(i);
+        Destination city = dataList.get(i);
 
-        name.setText(city.getName());
+        name.setText(city.getCity());
 
         Glide.with(viewGroup.getContext())
                 .load(city.getImage())
@@ -72,6 +72,6 @@ public class ItineraryAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return dataList.get(i).getName().hashCode();
+        return dataList.get(i).getId().hashCode();
     }
 }

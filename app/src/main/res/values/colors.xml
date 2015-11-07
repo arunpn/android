@@ -4,4 +4,5 @@
     <color name="action_bar_background">#3f51b5</color>
     <color name="action_bar_foreground">#ffffff</color>
     <color name="primary_color">#FFC107</color>
+    <color name="yellow">#FFC107</color>
 </resources>

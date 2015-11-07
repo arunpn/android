@@ -78,12 +78,12 @@ public class SwipeAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
+    public Place getItem(int i) {
         return dataList.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return dataList.get(i).getName().hashCode();
+        return dataList.get(i).getId().hashCode();
     }
 }

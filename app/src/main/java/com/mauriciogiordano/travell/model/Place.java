@@ -19,19 +19,25 @@ import java.util.List;
 public class Place extends Model<Place> {
 
     @ModelField
+    private String destinationId;
+    @ModelField
     private String name;
     @ModelField
     private List<String> images;
     @ModelField
-    private String reference;
+    private int rating;
     @ModelField
-    private String biography;
+    private String review_text;
+    @ModelField
+    private String review_image;
+    @ModelField
+    private int review_count;
+    @ModelField
+    private String phone;
     @ModelField
     private String latitude;
     @ModelField
     private String longitude;
-    @ModelField
-    private String telephone;
 
     public Place() {
         super(Place.class, true);
@@ -41,29 +47,34 @@ public class Place extends Model<Place> {
         super(Place.class, true, context);
     }
 
-    public Place(JSONObject jsonObject, Context context) {
+    public Place(Destination destination, JSONObject jsonObject, Context context) {
         super(Place.class, true, context);
 
+        destinationId = destination.getId();
+
         try {
-            name = jsonObject.getString("name");
+            name = jsonObject.optString("name", "");
             images = new ArrayList<>();
-            reference = jsonObject.getString("reference");
-            biography = jsonObject.getString("biography");
-            latitude = jsonObject.getString("latitude");
-            longitude = jsonObject.getString("longitude");
-            telephone = jsonObject.getString("telephone");
+            rating = jsonObject.optInt("rating", 1);
+            review_text = jsonObject.optString("review_text", "");
+            review_image = jsonObject.optString("review_image", "");
+            review_count = jsonObject.optInt("review_count", 1);
+            phone = jsonObject.optString("phone", "");
+            latitude = jsonObject.optString("latitude", "");
+            longitude = jsonObject.optString("longitude", "");
 
             JSONArray jsonArray = jsonObject.getJSONArray("images");
 
             for (int i=0; i<jsonArray.length(); i++) {
-                images.add(jsonArray.getString(i));
+                images.add(jsonArray.getJSONObject(i).getString("url"));
             }
         } catch (JSONException ignore) {}
     }
 
-    public Place(String name, String image, Context context) {
+    public Place(Destination destination, String name, String image, Context context) {
         super(Place.class, true, context);
 
+        this.destinationId = destination.getId();
         this.name = name;
         this.images = new ArrayList<>();
         this.images.add(image);
@@ -75,9 +86,24 @@ public class Place extends Model<Place> {
         return dummy.find(id);
     }
 
+    public static List<Place> findForDestination(String id, Context context) {
+        Place dummy = new Place(context);
+
+        List<Place> places = dummy.findAll();
+        List<Place> curatedPlaces = new ArrayList<>();
+
+        for (Place place : places) {
+            if (place.destinationId.equals(id)) {
+                curatedPlaces.add(place);
+            }
+        }
+
+        return curatedPlaces;
+    }
+
     @Override
     public String getId() {
-        return String.valueOf((name + reference).hashCode());
+        return String.valueOf((name + review_text).hashCode());
     }
 
     public String getName() {
@@ -92,24 +118,56 @@ public class Place extends Model<Place> {
         return images;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public String getDestinationId() {
+        return destinationId;
+    }
+
+    public void setDestinationId(String destinationId) {
+        this.destinationId = destinationId;
+    }
+
     public void setImages(List<String> images) {
         this.images = images;
     }
 
-    public String getReference() {
-        return reference;
+    public String getReview_text() {
+        return review_text;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setReview_text(String review_text) {
+        this.review_text = review_text;
     }
 
-    public String getBiography() {
-        return biography;
+    public String getReview_image() {
+        return review_image;
     }
 
-    public void setBiography(String biography) {
-        this.biography = biography;
+    public void setReview_image(String review_image) {
+        this.review_image = review_image;
+    }
+
+    public int getReview_count() {
+        return review_count;
+    }
+
+    public void setReview_count(int review_count) {
+        this.review_count = review_count;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getLatitude() {
@@ -126,13 +184,5 @@ public class Place extends Model<Place> {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
     }
 }

@@ -1,12 +1,13 @@
 package com.mauriciogiordano.travell;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.mauriciogiordano.travell.adapter.ImagesAdapter;
+import com.mauriciogiordano.travell.adapter.PlaceContentAdapter;
 import com.mauriciogiordano.travell.model.Place;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class PlaceActivity extends ActionBarActivity {
 
-    private Place place;
+    public Place place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +41,8 @@ public class PlaceActivity extends ActionBarActivity {
             return;
         }
 
-        TextView name = (TextView) findViewById(R.id.name);
         ViewPager imagePager = (ViewPager) findViewById(R.id.imagePager);
-
-        name.setText(place.getName());
+        ViewPager contentPager = (ViewPager) findViewById(R.id.contentPager);
 
         ImagesAdapter adapter = new ImagesAdapter();
         List<String> images = place.getImages();
@@ -54,6 +53,11 @@ public class PlaceActivity extends ActionBarActivity {
 
         getSupportActionBar().setTitle(place.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        contentPager.setAdapter(new PlaceContentAdapter(getSupportFragmentManager(), getApplicationContext()));
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(contentPager);
     }
 
     @Override
