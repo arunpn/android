@@ -52,7 +52,7 @@ public class SwipeAdapter extends BaseAdapter {
         name.setText(place.getName());
 
         Glide.with(viewGroup.getContext())
-                .load(place.getImage())
+                .load(place.getImages().get(0))
                 .centerCrop()
                 .crossFade()
                 .into(image);

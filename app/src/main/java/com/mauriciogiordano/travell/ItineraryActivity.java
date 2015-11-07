@@ -1,12 +1,15 @@
 package com.mauriciogiordano.travell;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.mauriciogiordano.travell.adapter.ItineraryAdapter;
@@ -30,15 +33,27 @@ public class ItineraryActivity extends ActionBarActivity {
         }
 
         ListView listView = (ListView) findViewById(R.id.listView);
-        ItineraryAdapter adapter = new ItineraryAdapter();
+        final ItineraryAdapter adapter = new ItineraryAdapter();
 
         listView.setAdapter(adapter);
 
         List<City> dataList = new ArrayList<>();
-        dataList.add(new City("São Paulo", "http://claritur.com.br/site/wp-content/uploads/2013/09/sp_groupon.jpg"));
-        dataList.add(new City("Rio de Janeiro", "http://blog.encontresuaviagem.com.br/wp-content/uploads/2015/05/Rio-de-Janeiro.jpg"));
+        dataList.add(new City("São Paulo", "http://claritur.com.br/site/wp-content/uploads/2013/09/sp_groupon.jpg", this));
+        dataList.add(new City("Rio de Janeiro", "http://blog.encontresuaviagem.com.br/wp-content/uploads/2015/05/Rio-de-Janeiro.jpg", this));
 
         adapter.setDataList(dataList);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                City city = (City) adapter.getItem(i);
+                city.save();
+
+                Intent intent = new Intent(ItineraryActivity.this, SwipeActivity.class);
+                intent.putExtra("cityId", city.getId());
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
