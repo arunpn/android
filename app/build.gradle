@@ -30,4 +30,5 @@ dependencies {
     compile 'com.pnikosis:materialish-progress:1.7'
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.mauriciogiordano:easydb:0.1.2'
+    compile 'it.sephiroth.android.library.horizontallistview:hlistview:1.2.2'
 }

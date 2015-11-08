@@ -1,17 +1,28 @@
 package com.mauriciogiordano.travell;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.FutureTarget;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mauriciogiordano.travell.helper.DirectionsJSONParser;
@@ -29,6 +40,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Mauricio Giordano on 11/7/15.
@@ -42,6 +55,31 @@ public class ItineraryActivity extends ActionBarActivity {
     private ArrayList<LatLng> markerPoints;
     public Destination destination;
     public List<Place> placeList;
+
+    private Map<String, Bitmap> bitmapMap = new HashMap<>();
+
+    private class LoadImages extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            for (Place place : placeList) {
+                try {
+                    FutureTarget<Bitmap> future = Glide.with(ItineraryActivity.this)
+                            .load(place.getImages().get(0))
+                            .asBitmap()
+                            .into(300, 300);
+
+                    bitmapMap.put(place.getId(), future.get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +102,8 @@ public class ItineraryActivity extends ActionBarActivity {
 
         placeList = Place.findForDestination(destination.getId(), this);
 
+        new LoadImages().execute();
+
         // Initializing
         markerPoints = new ArrayList<LatLng>();
 
@@ -74,6 +114,9 @@ public class ItineraryActivity extends ActionBarActivity {
             mapF = SupportMapFragment.newInstance();
             fm.beginTransaction().replace(R.id.map, mapF).commit();
         }
+
+        getSupportActionBar().setTitle("Itinerary");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -108,20 +151,58 @@ public class ItineraryActivity extends ActionBarActivity {
                      * for the end location, the color of marker is RED and
                      * for the rest of markers, the color is AZURE
                      */
-                    if (markerPoints.size() == 1) {
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                    } else if (markerPoints.size() == 2) {
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                    } else {
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                    }
+                    float[] hsv = new float[3];
+                    int[] rgb = new int[3];
+                    rgb[0] = Color.red(place.getColor());
+                    rgb[1] = Color.green(place.getColor());
+                    rgb[2] = Color.blue(place.getColor());
 
+                    Color.RGBToHSV(rgb[0], rgb[1], rgb[2], hsv);
+                    options.icon(BitmapDescriptorFactory.defaultMarker(hsv[0]));
                     options.title(place.getName());
-                    options.snippet(place.getReview_text());
+
+                    options.snippet("" + placeList.indexOf(place));
 
                     // Add new marker to the Google Map Android API V2
                     map.addMarker(options);
                 }
+
+                map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+
+                        View layout = getLayoutInflater().inflate(R.layout.adapter_map_balloon, null);
+
+                        TextView title = (TextView) layout.findViewById(R.id.title);
+                        title.setText(marker.getTitle());
+
+                        ImageView snippet = (ImageView) layout.findViewById(R.id.snippet);
+
+                        int pos = Integer.parseInt(marker.getSnippet());
+                        Place place = placeList.get(pos);
+
+                        if (bitmapMap.containsKey(place.getId())) {
+                            snippet.setImageBitmap(bitmapMap.get(place.getId()));
+                        } else {
+                            try {
+                                Glide.with(ItineraryActivity.this)
+                                        .load(place.getImages().get(0))
+                                    .asBitmap()
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .centerCrop()
+                                    .into(snippet);
+                            } catch (Exception e) {}
+                        }
+
+                        return layout;
+                    }
+                });
 
                 Place firstPlace = placeList.get(0);
 
@@ -310,5 +391,33 @@ public class ItineraryActivity extends ActionBarActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("destinationId", destination.getId());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_itinerary, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            Intent i = new Intent(this, DestinationActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+
+            return true;
+        } else if (item.getItemId() == R.id.action_details) {
+            Intent i = new Intent(this, ItineraryDescriptionActivity.class);
+            i.putExtra("destinationId", destination.getId());
+            startActivity(i);
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

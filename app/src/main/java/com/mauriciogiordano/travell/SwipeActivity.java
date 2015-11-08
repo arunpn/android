@@ -200,7 +200,7 @@ public class SwipeActivity extends ActionBarActivity {
                                 try {
                                     FutureTarget<File> future = Glide.with(SwipeActivity.this)
                                         .load(place.getImages().get(0))
-                                        .downloadOnly(400, 400);
+                                        .downloadOnly(300, 300);
 
                                     File cacheFile = future.get();
                                 } catch (Exception e) {

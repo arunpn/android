@@ -7,6 +7,40 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <LinearLayout android:id="@+id/layoutMyItineraries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/action_bar_background"
+                android:textSize="18sp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="16dp"
+                android:text="My itineraries" />
+
+            <it.sephiroth.android.library.widget.HListView
+                android:id="@+id/listViewMyItineraries"
+                android:layout_width="match_parent"
+                android:layout_height="150dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/action_bar_background"
+            android:textSize="18sp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="Start a new itinerary" />
+
         <ListView android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

@@ -49,7 +49,7 @@ public class ItineraryDescriptionActivity extends ActionBarActivity {
         gridView.setAdapter(adapter);
         adapter.setDataList(placeList);
 
-        getSupportActionBar().setTitle("Itinerary");
+        getSupportActionBar().setTitle("Itinerary Places");
     }
 
     @Override

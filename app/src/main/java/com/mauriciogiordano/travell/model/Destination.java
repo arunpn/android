@@ -10,6 +10,8 @@ import com.mauriciogiordano.travell.api.Delegate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Created by Mauricio Giordano on 11/7/15.
  * Author: Mauricio Giordano (mauricio.c.giordano@gmail.com)
@@ -17,6 +19,8 @@ import org.json.JSONObject;
  */
 public class Destination extends Model<Destination> {
 
+    @ModelField
+    private String id;
     @ModelField
     private String weight;
     @ModelField
@@ -45,6 +49,8 @@ public class Destination extends Model<Destination> {
             city = jsonObject.getString("city");
             country = jsonObject.getString("country");
             image = jsonObject.getString("image");
+
+            id = reference.hashCode() + "";
         } catch (JSONException ignore) {}
     }
 
@@ -60,6 +66,12 @@ public class Destination extends Model<Destination> {
         Destination dummy = new Destination(context);
 
         return dummy.find(id);
+    }
+
+    public static List<Destination> findAll(Context context) {
+        Destination dummy = new Destination(context);
+
+        return dummy.findAll();
     }
 
     public static void getTopDestinations(Delegate delegate) {
@@ -81,7 +93,7 @@ public class Destination extends Model<Destination> {
 
     @Override
     public String getId() {
-        return reference;
+        return id;
     }
 
     public String getWeight() {

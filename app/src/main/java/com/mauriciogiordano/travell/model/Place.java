@@ -59,7 +59,7 @@ public class Place extends Model<Place> {
         try {
             color = 0;
             id = "" + jsonObject.optString("place", "").hashCode();
-            destinationId = jsonObject.optString("destinationId", "");
+            destinationId = jsonObject.optString("destinationId", "").hashCode() + "";
             name = jsonObject.optString("name", "");
             images = new ArrayList<>();
             rating = jsonObject.optInt("rating", 1);
