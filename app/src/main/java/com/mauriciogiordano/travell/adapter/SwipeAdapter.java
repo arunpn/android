@@ -39,6 +39,7 @@ public class SwipeAdapter extends BaseAdapter {
     public void remove(int i) {
         dataList.remove(i);
         notifyDataSetChanged();
+        notifyDataSetInvalidated();
     }
 
     public SwipeAdapter() {

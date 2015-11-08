@@ -50,7 +50,7 @@ public class DestinationAdapter extends BaseAdapter {
 
         Destination city = dataList.get(i);
 
-        name.setText(city.getCity());
+        name.setText(city.getCity() + ", " + city.getCountry());
 
         Glide.with(viewGroup.getContext())
                 .load(city.getImage())

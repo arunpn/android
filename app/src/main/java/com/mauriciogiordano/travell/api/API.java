@@ -23,6 +23,7 @@ public class API {
 
     public final static String HOST = "10.0.3.2"; // inevent.us
     public final static String PATH = "/";
+    public final static String URL = "http://10.0.3.2:3000";
     public final static int GET 	= 0;
     public final static int POST 	= 1;
 

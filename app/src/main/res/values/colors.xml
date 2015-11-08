@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="status_bar_background">#ff354497</color>
-    <color name="action_bar_background">#3f51b5</color>
+    <color name="status_bar_background">#ff1c80cf</color>
+    <color name="action_bar_background">#2196F3</color>
     <color name="action_bar_foreground">#ffffff</color>
     <color name="primary_color">#FFC107</color>
     <color name="yellow">#FFC107</color>

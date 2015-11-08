@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -12,8 +11,6 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.mauriciogiordano.travell.adapter.SwipeAdapter;
 import com.mauriciogiordano.travell.api.Delegate;
@@ -25,7 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +38,7 @@ public class SwipeActivity extends ActionBarActivity {
     private SwipeFlingAdapterView flingContainer;
     private SwipeAdapter adapter;
     private List<Place> dataList;
+    private List<Place> dataListBak;
     private int dataListSize = 0;
 
     @Override
@@ -83,6 +80,9 @@ public class SwipeActivity extends ActionBarActivity {
 
         flingContainer.setAdapter(adapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+
+            private int selected = 0;
+
             @Override
             public void removeFirstObjectInAdapter() {
                 adapter.remove(0);
@@ -103,15 +103,22 @@ public class SwipeActivity extends ActionBarActivity {
                 Place place = (Place) dataObject;
                 place.setContext(SwipeActivity.this);
                 place.save();
+                selected++;
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 if (itemsInAdapter == 0 && dataListSize > 0) {
-                    Intent intent = new Intent(SwipeActivity.this, ItineraryActivity.class);
-                    intent.putExtra("destinationId", destination.getId());
-                    startActivity(intent);
-                    finish();
+                    if (selected <= 1) {
+                        destination.remove();
+                        Toast.makeText(SwipeActivity.this, "You didn't selected any POI", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Intent intent = new Intent(SwipeActivity.this, ItineraryActivity.class);
+                        intent.putExtra("destinationId", destination.getId());
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
 
@@ -131,10 +138,10 @@ public class SwipeActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 if (adapter.getCount() == 0) return;
-                Place place = adapter.getItem(0);
-                place.setContext(SwipeActivity.this);
-                place.save();
-                adapter.remove(0);
+                flingContainer.getTopCardListener().selectRight();
+                View _view = flingContainer.getSelectedView();
+                _view.findViewById(R.id.item_swipe_right).setAlpha(1);
+                _view.findViewById(R.id.item_swipe_right_indicator).setAlpha(1);
             }
         });
 
@@ -142,10 +149,10 @@ public class SwipeActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 if (adapter.getCount() == 0) return;
-                Place place = adapter.getItem(0);
-                place.setContext(SwipeActivity.this);
-                place.remove();
-                adapter.remove(0);
+                flingContainer.getTopCardListener().selectLeft();
+                View _view = flingContainer.getSelectedView();
+                _view.findViewById(R.id.item_swipe_left).setAlpha(1);
+                _view.findViewById(R.id.item_swipe_left_indicator).setAlpha(1);
             }
         });
 
@@ -183,30 +190,18 @@ public class SwipeActivity extends ActionBarActivity {
                             JSONArray jsonArray = result.getJSONArray("data");
 
                             dataList = new ArrayList<>();
+                            dataListBak = new ArrayList<Place>();
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 Place d = new Place(jsonArray.getJSONObject(i), SwipeActivity.this);
 
-                                Log.d("PLACEID", "" + d.getId().hashCode());
-
                                 dataList.add(d);
+                                dataListBak.add(d);
                             }
 
                             dataListSize = dataList.size();
 
                             adapter.setDataList(dataList);
-
-                            for (Place place : dataList) {
-                                try {
-                                    FutureTarget<File> future = Glide.with(SwipeActivity.this)
-                                        .load(place.getImages().get(0))
-                                        .downloadOnly(300, 300);
-
-                                    File cacheFile = future.get();
-                                } catch (Exception e) {
-
-                                }
-                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

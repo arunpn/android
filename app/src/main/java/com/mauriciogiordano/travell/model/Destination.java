@@ -47,7 +47,7 @@ public class Destination extends Model<Destination> {
             weight = jsonObject.getString("weight");
             reference = jsonObject.getString("reference");
             city = jsonObject.getString("city");
-            country = jsonObject.getString("country");
+            country = jsonObject.getString("countryCode");
             image = jsonObject.getString("image");
 
             id = reference.hashCode() + "";
@@ -89,6 +89,24 @@ public class Destination extends Model<Destination> {
         client.addParamForGet("location", getReference());
 
         new API(delegate).request(client, API.GET, delegate);
+    }
+
+    public static void filter(String query, Delegate delegate) {
+        Client client = new Client("/search");
+
+        client.addParamForGet("limit", "5");
+        client.addParamForGet("query", query);
+
+        new API(delegate).request(client, API.GET, delegate);
+    }
+
+    public boolean isSimilar(String query) {
+        query = query.toLowerCase();
+
+        return (
+                city.toLowerCase().contains(query) ||
+                country.toLowerCase().contains(query)
+        );
     }
 
     @Override

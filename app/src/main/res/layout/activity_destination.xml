@@ -1,59 +1,67 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <LinearLayout android:id="@+id/layoutMyItineraries"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout android:id="@+id/layoutMyItineraries"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/action_bar_background"
-                android:textSize="18sp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginRight="24dp"
-                android:layout_marginBottom="16dp"
-                android:text="My itineraries" />
+                android:orientation="vertical">
 
-            <it.sephiroth.android.library.widget.HListView
-                android:id="@+id/listViewMyItineraries"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/action_bar_background"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginRight="24dp"
+                    android:text="My itineraries" />
+
+                <it.sephiroth.android.library.widget.HListView
+                    android:id="@+id/listViewMyItineraries"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp" />
+
+            </LinearLayout>
+
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/progressBar"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:matProg_barColor="#5588FF"
+                app:matProg_progressIndeterminate="true" />
+
+
+            <LinearLayout android:id="@+id/layoutSearch"
                 android:layout_width="match_parent"
-                android:layout_height="150dp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/action_bar_background"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginRight="24dp"
+                    android:text="Start a new itinerary" />
+
+                <com.mauriciogiordano.travell.fragment.ExpandableListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/action_bar_background"
-            android:textSize="18sp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginRight="24dp"
-            android:layout_marginBottom="16dp"
-            android:text="Start a new itinerary" />
-
-        <ListView android:id="@+id/listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-    <com.pnikosis.materialishprogress.ProgressWheel
-        android:id="@+id/progressBar"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone"
-        app:matProg_barColor="#5588FF"
-        app:matProg_progressIndeterminate="true" />
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>
