@@ -1,8 +1,11 @@
 package com.mauriciogiordano.travell;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.mauriciogiordano.travell.adapter.PlacesAdapter;
@@ -44,12 +47,24 @@ public class ItineraryDescriptionActivity extends ActionBarActivity {
         placeList = Place.findForDestination(destination.getId(), this);
 
         GridView gridView = (GridView) findViewById(R.id.gridView);
-        PlacesAdapter adapter = new PlacesAdapter();
+        final PlacesAdapter adapter = new PlacesAdapter();
 
         gridView.setAdapter(adapter);
         adapter.setDataList(placeList);
 
         getSupportActionBar().setTitle("Itinerary Places");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Place place = adapter.getItem(i);
+
+                Intent intent = new Intent(ItineraryDescriptionActivity.this, PlaceActivity.class);
+                intent.putExtra("placeId", place.getId());
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

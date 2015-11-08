@@ -100,7 +100,10 @@ public class PlaceActivity extends ActionBarActivity {
             fm.beginTransaction().replace(R.id.map, mapF).commit();
         }
 
-        if (place.getReview_text().equals("")) {
+        if (place.getReview_text().equals("") ||
+            place.getReview_text().equals("null") ||
+            place.getReview_image().equals("") ||
+            place.getReview_image().equals("null")) {
             reviewLayout.setVisibility(View.GONE);
         }
     }
