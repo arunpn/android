@@ -19,7 +19,7 @@
             app:max_visible="4"
             app:min_adapter_stack="6" />
 
-        <LinearLayout
+        <LinearLayout android:id="@+id/actions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

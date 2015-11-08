@@ -21,6 +21,8 @@ public class Place extends Model<Place> {
     @ModelField
     private String destinationId;
     @ModelField
+    private String place;
+    @ModelField
     private String name;
     @ModelField
     private List<String> images;
@@ -47,13 +49,13 @@ public class Place extends Model<Place> {
         super(Place.class, true, context);
     }
 
-    public Place(Destination destination, JSONObject jsonObject, Context context) {
+    public Place(JSONObject jsonObject, Context context) {
         super(Place.class, true, context);
 
-        destinationId = destination.getId();
-
         try {
+            destinationId = jsonObject.optString("destinationId", "");
             name = jsonObject.optString("name", "");
+            place = jsonObject.optString("place", "");
             images = new ArrayList<>();
             rating = jsonObject.optInt("rating", 1);
             review_text = jsonObject.optString("review_text", "");
@@ -63,12 +65,14 @@ public class Place extends Model<Place> {
             latitude = jsonObject.optString("latitude", "");
             longitude = jsonObject.optString("longitude", "");
 
-            JSONArray jsonArray = jsonObject.getJSONArray("images");
+            JSONArray jsonArray = jsonObject.getJSONArray("place-images");
 
             for (int i=0; i<jsonArray.length(); i++) {
                 images.add(jsonArray.getJSONObject(i).getString("url"));
             }
-        } catch (JSONException ignore) {}
+        } catch (JSONException ignore) {
+            ignore.printStackTrace();
+        }
     }
 
     public Place(Destination destination, String name, String image, Context context) {
@@ -103,7 +107,7 @@ public class Place extends Model<Place> {
 
     @Override
     public String getId() {
-        return String.valueOf((name + review_text).hashCode());
+        return place;
     }
 
     public String getName() {
@@ -116,6 +120,14 @@ public class Place extends Model<Place> {
 
     public List<String> getImages() {
         return images;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
     }
 
     public int getRating() {

@@ -21,7 +21,7 @@ public class API {
 
     private Delegate delegateReceiver;
 
-    public final static String HOST = "10.100.5.124"; // inevent.us
+    public final static String HOST = "10.0.3.2"; // inevent.us
     public final static String PATH = "/";
     public final static int GET 	= 0;
     public final static int POST 	= 1;

@@ -82,12 +82,7 @@ public class DestinationActivity extends ActionBarActivity {
                             List<Destination> dataList = new ArrayList<>();
 
                             for (int i=0; i<jsonArray.length(); i++) {
-                                Destination d = new Destination(DestinationActivity.this);
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                                d.setCity(jsonObject.getString("city"));
-                                d.setCountry(jsonObject.getString("country"));
-                                d.setImage(jsonObject.getString("image"));
+                                Destination d = new Destination(jsonArray.getJSONObject(i), DestinationActivity.this);
 
                                 dataList.add(d);
                             }

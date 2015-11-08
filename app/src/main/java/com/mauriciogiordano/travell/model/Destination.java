@@ -18,6 +18,10 @@ import org.json.JSONObject;
 public class Destination extends Model<Destination> {
 
     @ModelField
+    private String weight;
+    @ModelField
+    private String reference;
+    @ModelField
     private String city;
     @ModelField
     private String country;
@@ -36,6 +40,8 @@ public class Destination extends Model<Destination> {
         super(Destination.class, true, context);
 
         try {
+            weight = jsonObject.getString("weight");
+            reference = jsonObject.getString("reference");
             city = jsonObject.getString("city");
             country = jsonObject.getString("country");
             image = jsonObject.getString("image");
@@ -68,14 +74,30 @@ public class Destination extends Model<Destination> {
         Client client = new Client("/destination");
 
         client.addParamForGet("limit", "10");
-        client.addParamForGet("location", getCity() + ", " + getCountry());
+        client.addParamForGet("location", getReference());
 
         new API(delegate).request(client, API.GET, delegate);
     }
 
     @Override
     public String getId() {
-        return String.valueOf((city + country + image).hashCode());
+        return reference;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public String getCity() {

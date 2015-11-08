@@ -11,4 +11,15 @@
         <item name="android:textColor">@color/action_bar_foreground</item>
     </style>
 
+    <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/action_bar_background</item>
+        <item name="colorPrimaryDark">@color/status_bar_background</item>
+        <item name="colorAccent">@color/action_bar_background</item>
+        <item name="android:windowBackground">@color/action_bar_foreground</item>
+    </style>
+
+    <style name="HeaderTitleStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">22sp</item>
+    </style>
 </resources>

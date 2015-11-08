@@ -30,6 +30,7 @@ public class SwipeActivity extends ActionBarActivity {
 
     private Destination destination;
     private View progressBar;
+    private View actions;
     private SwipeFlingAdapterView flingContainer;
     private SwipeAdapter adapter;
     private List<Place> dataList;
@@ -59,6 +60,7 @@ public class SwipeActivity extends ActionBarActivity {
 
         RelativeLayout like = (RelativeLayout) findViewById(R.id.like);
         RelativeLayout dislike = (RelativeLayout) findViewById(R.id.dislike);
+        actions = findViewById(R.id.actions);
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
         progressBar = findViewById(R.id.progressBar);
         adapter = new SwipeAdapter();
@@ -149,12 +151,14 @@ public class SwipeActivity extends ActionBarActivity {
     private void loadPlaces() {
         progressBar.setVisibility(View.VISIBLE);
         flingContainer.setVisibility(View.GONE);
+        actions.setVisibility(View.GONE);
 
         destination.getTopPlaces(new Delegate() {
             @Override
             public void requestResults(boolean hasInternet, HttpResponse response, JSONObject result) {
                 progressBar.setVisibility(View.GONE);
                 flingContainer.setVisibility(View.VISIBLE);
+                actions.setVisibility(View.VISIBLE);
 
                 if (hasInternet) {
                     if (response.getStatusLine().getStatusCode() == 200) {
@@ -164,7 +168,7 @@ public class SwipeActivity extends ActionBarActivity {
                             dataList = new ArrayList<>();
 
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                Place d = new Place(destination, jsonArray.getJSONObject(i), SwipeActivity.this);
+                                Place d = new Place(jsonArray.getJSONObject(i), SwipeActivity.this);
 
                                 dataList.add(d);
                             }
@@ -173,7 +177,7 @@ public class SwipeActivity extends ActionBarActivity {
 
                             adapter.setDataList(dataList);
                         } catch (JSONException e) {
-
+                            e.printStackTrace();
                         }
                     } else {
                         Toast.makeText(SwipeActivity.this, "Error", Toast.LENGTH_SHORT).show();

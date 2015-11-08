@@ -1,10 +1,13 @@
 package com.mauriciogiordano.travell.adapter;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -46,8 +49,15 @@ public class SwipeAdapter extends BaseAdapter {
 
         TextView name = (TextView) view.findViewById(R.id.name);
         ImageView image = (ImageView) view.findViewById(R.id.image);
+        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
 
         Place place = dataList.get(i);
+
+        ratingBar.setRating(place.getRating());
+
+        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+        stars.getDrawable(2).setColorFilter(viewGroup.getContext().getResources()
+                                                .getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
 
         name.setText(place.getName());
 
