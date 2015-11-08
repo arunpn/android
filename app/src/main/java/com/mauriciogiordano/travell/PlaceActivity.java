@@ -79,8 +79,8 @@ public class PlaceActivity extends ActionBarActivity {
 
         Glide.with(this)
                 .load(place.getReview_image())
+                .asBitmap()
                 .centerCrop()
-                .crossFade()
                 .into(reviewImage);
 
         FragmentManager fm = getSupportFragmentManager();
