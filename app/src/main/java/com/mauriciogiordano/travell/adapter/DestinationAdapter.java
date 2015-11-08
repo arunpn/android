@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mauriciogiordano.travell.R;
 import com.mauriciogiordano.travell.model.Destination;
 
@@ -53,8 +54,9 @@ public class DestinationAdapter extends BaseAdapter {
 
         Glide.with(viewGroup.getContext())
                 .load(city.getImage())
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
-                .crossFade()
                 .into(image);
 
         return view;

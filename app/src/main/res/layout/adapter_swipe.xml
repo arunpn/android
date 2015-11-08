@@ -13,6 +13,8 @@
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardElevation="2dp"
         card_view:cardCornerRadius="4dp">
 
         <RelativeLayout
@@ -39,7 +41,7 @@
                         android:layout_marginRight="8dp"
                         android:layout_marginBottom="8dp"
                         android:numStars="5"
-                        android:stepSize="1.0"
+                        android:stepSize="0.5"
                         style="@android:style/Widget.DeviceDefault.RatingBar.Small" />
 
                 </RelativeLayout>

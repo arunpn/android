@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mauriciogiordano.travell.R;
 
 import java.util.ArrayList;
@@ -37,8 +38,9 @@ public class ImagesAdapter extends PagerAdapter {
 
         Glide.with(container.getContext())
                 .load(dataList.get(position))
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
-                .crossFade()
                 .into(imageView);
 
         container.addView(imageView);

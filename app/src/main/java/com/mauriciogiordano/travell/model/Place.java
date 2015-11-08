@@ -19,13 +19,15 @@ import java.util.List;
 public class Place extends Model<Place> {
 
     @ModelField
-    private String destinationId;
+    private String id;
     @ModelField
-    private String place;
+    private String destinationId;
     @ModelField
     private String name;
     @ModelField
     private List<String> images;
+    @ModelField
+    private int color;
     @ModelField
     private int rating;
     @ModelField
@@ -42,20 +44,23 @@ public class Place extends Model<Place> {
     private String longitude;
 
     public Place() {
-        super(Place.class, true);
+        super(Place.class, false);
+        color = 0;
     }
 
     public Place(Context context) {
-        super(Place.class, true, context);
+        super(Place.class, false, context);
+        color = 0;
     }
 
     public Place(JSONObject jsonObject, Context context) {
-        super(Place.class, true, context);
+        super(Place.class, false, context);
 
         try {
+            color = 0;
+            id = "" + jsonObject.optString("place", "").hashCode();
             destinationId = jsonObject.optString("destinationId", "");
             name = jsonObject.optString("name", "");
-            place = jsonObject.optString("place", "");
             images = new ArrayList<>();
             rating = jsonObject.optInt("rating", 1);
             review_text = jsonObject.optString("review_text", "");
@@ -65,7 +70,7 @@ public class Place extends Model<Place> {
             latitude = jsonObject.optString("latitude", "");
             longitude = jsonObject.optString("longitude", "");
 
-            JSONArray jsonArray = jsonObject.getJSONArray("place-images");
+            JSONArray jsonArray = jsonObject.getJSONArray("images");
 
             for (int i=0; i<jsonArray.length(); i++) {
                 images.add(jsonArray.getJSONObject(i).getString("url"));
@@ -76,12 +81,13 @@ public class Place extends Model<Place> {
     }
 
     public Place(Destination destination, String name, String image, Context context) {
-        super(Place.class, true, context);
+        super(Place.class, false, context);
 
         this.destinationId = destination.getId();
         this.name = name;
         this.images = new ArrayList<>();
         this.images.add(image);
+        color = 0;
     }
 
     public static Place find(String id, Context context) {
@@ -107,7 +113,7 @@ public class Place extends Model<Place> {
 
     @Override
     public String getId() {
-        return place;
+        return id;
     }
 
     public String getName() {
@@ -122,12 +128,20 @@ public class Place extends Model<Place> {
         return images;
     }
 
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     public String getPlace() {
-        return place;
+        return id;
     }
 
     public void setPlace(String place) {
-        this.place = place;
+        this.id = place;
     }
 
     public int getRating() {

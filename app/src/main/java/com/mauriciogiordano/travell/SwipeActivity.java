@@ -1,12 +1,19 @@
 package com.mauriciogiordano.travell;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.mauriciogiordano.travell.adapter.SwipeAdapter;
 import com.mauriciogiordano.travell.api.Delegate;
@@ -18,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +49,12 @@ public class SwipeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_swipe);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.status_bar_background));
+        }
 
         String destinationId = getIntent().getStringExtra("destinationId");
 
@@ -146,6 +160,9 @@ public class SwipeActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+        getSupportActionBar().setTitle(destination.getCity());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void loadPlaces() {
@@ -170,12 +187,26 @@ public class SwipeActivity extends ActionBarActivity {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 Place d = new Place(jsonArray.getJSONObject(i), SwipeActivity.this);
 
+                                Log.d("PLACEID", "" + d.getId().hashCode());
+
                                 dataList.add(d);
                             }
 
                             dataListSize = dataList.size();
 
                             adapter.setDataList(dataList);
+
+                            for (Place place : dataList) {
+                                try {
+                                    FutureTarget<File> future = Glide.with(SwipeActivity.this)
+                                        .load(place.getImages().get(0))
+                                        .downloadOnly(400, 400);
+
+                                    File cacheFile = future.get();
+                                } catch (Exception e) {
+
+                                }
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -194,5 +225,16 @@ public class SwipeActivity extends ActionBarActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("destinationId", destination.getId());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

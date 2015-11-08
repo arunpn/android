@@ -1,7 +1,9 @@
 package com.mauriciogiordano.travell.adapter;
 
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
+import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.mauriciogiordano.travell.R;
 import com.mauriciogiordano.travell.model.Place;
 
@@ -41,7 +46,7 @@ public class SwipeAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         if (view == null) {
             view = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.adapter_swipe, viewGroup, false);
@@ -51,21 +56,46 @@ public class SwipeAdapter extends BaseAdapter {
         ImageView image = (ImageView) view.findViewById(R.id.image);
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
 
-        Place place = dataList.get(i);
+        final Place place = dataList.get(i);
 
         ratingBar.setRating(place.getRating());
 
         LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
         stars.getDrawable(2).setColorFilter(viewGroup.getContext().getResources()
-                                                .getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+                .getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
 
         name.setText(place.getName());
 
-        Glide.with(viewGroup.getContext())
-                .load(place.getImages().get(0))
-                .centerCrop()
-                .crossFade()
-                .into(image);
+        if (place.getImages().size() > 0) {
+            Glide.with(viewGroup.getContext())
+                    .load(place.getImages().get(0))
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(image) {
+
+                        @Override
+                        public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
+                            super.onResourceReady(bitmap, anim);
+
+                            Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(Palette palette) {
+                                    Palette.Swatch swatch = palette.getDarkVibrantSwatch();
+
+                                    if (swatch == null) {
+                                        swatch = palette.getDarkMutedSwatch();
+                                    }
+
+                                    if (swatch != null) {
+                                        place.setColor(swatch.getRgb());
+                                    }
+                                }
+                            });
+                        }
+
+                    });
+        }
 
         switch (i) {
             case 0:
